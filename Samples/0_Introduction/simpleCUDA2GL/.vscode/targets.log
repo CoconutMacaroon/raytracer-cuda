@@ -9,7 +9,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Aug  2 11:32:59 2022
+# Make data base, printed on Tue Aug  2 15:00:21 2022
 
 # Variables
 
@@ -19,21 +19,17 @@ GDK_BACKEND = x11
 LC_ALL = C
 # environment
 NO_AT_BRIDGE = 1
- 
-# makefile (from 'Makefile', line 163)
+# makefile (from 'Makefile', line 136)
 NVCCFLAGS := -m64
-# makefile (from 'Makefile', line 335)
+# makefile (from 'Makefile', line 308)
+ 
 ALL_CCFLAGS := -m64 --threads 0 --std=c++11
 # environment
-I3SOCK = /run/user/1000/i3/ipc-socket.942
+I3SOCK = /run/user/1000/i3/ipc-socket.941
 # environment
-VSCODE_CWD = /home/arjun/cuda-samples/Samples/0_Introduction/simpleCUDA2GL
+VSCODE_CWD = /home/arjun
 # makefile (from 'findgllib.mk', line 60)
 SUSE = $(shell echo $(DISTRO) | grep -i 'suse\|sles' >/dev/null 2>&1; echo $$?)
-# environment
-GPG_TTY = /dev/pts/3
-# environment
-WINDOWID = 50331663
 # default
 MAKE_COMMAND := make
 # automatic
@@ -50,8 +46,6 @@ PWD = /home/arjun/cuda-samples/Samples/0_Introduction/simpleCUDA2GL
 MAIL = /var/spool/mail/arjun
 # makefile (from 'findgllib.mk', line 48)
 DISTRO := arch BUILD_rolling
-# environment
-OLDPWD = /home/arjun/cuda-samples/Samples/0_Introduction
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # automatic
@@ -76,7 +70,7 @@ CURDIR := /home/arjun/cuda-samples/Samples/0_Introduction/simpleCUDA2GL
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
-# makefile (from 'Makefile', line 110)
+# makefile (from 'Makefile', line 83)
 TARGET_OS = $(HOST_OS)
 # environment
 MFLAGS = -pqrR
@@ -90,10 +84,10 @@ XDG_SESSION_DESKTOP = i3
 MAKEFILE_LIST := Makefile findgllib.mk
 # automatic
 @F = $(notdir $@)
-# makefile (from 'Makefile', line 74)
+# makefile (from 'Makefile', line 47)
 TARGET_ARCH = $(HOST_ARCH)
 # environment
-VSCODE_PID = 14742
+VSCODE_PID = 1508
 # environment
 XDG_SESSION_TYPE = x11
 # makefile (from 'findgllib.mk', line 124)
@@ -102,11 +96,11 @@ HEADER_SEARCH_PATH = $(TARGET_FS)/usr/include
 CUDA_PATH = /opt/cuda
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
-# makefile (from 'Makefile', line 159)
+# makefile (from 'Makefile', line 132)
 HOST_COMPILER = g++
-# makefile (from 'Makefile', line 164)
+# makefile (from 'Makefile', line 137)
 CCFLAGS := 
-# makefile (from 'Makefile', line 293)
+# makefile (from 'Makefile', line 266)
 INCLUDES := -I../../../Common
 # automatic
 *F = $(notdir $*)
@@ -122,9 +116,9 @@ GLULIB :=
 DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
-# makefile (from 'Makefile', line 338)
+# makefile (from 'Makefile', line 311)
 EXEC = @echo "[@]"
-# makefile (from 'Makefile', line 160)
+# makefile (from 'Makefile', line 133)
 NVCC := /opt/cuda/bin/nvcc -ccbin g++
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
@@ -132,14 +126,12 @@ VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupp
 MAKE_HOST := x86_64-pc-linux-gnu
 # makefile
 SHELL = /bin/sh
-# makefile (from 'Makefile', line 234)
+# makefile (from 'Makefile', line 207)
 CUDA_INSTALL_TARGET_DIR := 
 # default
 MAKECMDGOALS := all
 # environment
-SHLVL = 2
-# environment
-TERMINFO = /usr/lib/kitty/terminfo
+SHLVL = 1
 # environment
 MAKELEVEL := 0
 # makefile (from 'findgllib.mk', line 56)
@@ -147,7 +139,7 @@ UBUNTU = $(shell echo $(DISTRO) | grep -i ubuntu      >/dev/null 2>&1; echo $$?)
 # default
 MAKE = $(MAKE_COMMAND)
 # environment
-PATH = /opt/anaconda/bin:/home/arjun/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/opt/cuda/bin:/opt/cuda/nsight_compute:/opt/cuda/nsight_systems/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/arjun/blender-3.1.0-linux-x64:/usr/local/bin/VSCode-linux-x64/bin
+PATH = /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/opt/cuda/bin:/opt/cuda/nsight_compute:/opt/cuda/nsight_systems/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
 # default
 MAKEFILES := 
 # environment
@@ -156,9 +148,9 @@ MOTD_SHOWN = pam
 ^F = $(notdir $^)
 # makefile (from 'findgllib.mk', line 57)
 FEDORA = $(shell echo $(DISTRO) | grep -i fedora      >/dev/null 2>&1; echo $$?)
-# makefile (from 'Makefile', line 73)
+# makefile (from 'Makefile', line 46)
 HOST_ARCH := x86_64
-# makefile (from 'Makefile', line 288)
+# makefile (from 'Makefile', line 261)
 ALL_LDFLAGS := -m64
 # automatic
 ?F = $(notdir $?)
@@ -185,42 +177,36 @@ XDG_VTNR = 7
 # makefile (from 'findgllib.mk', line 132)
 GLUHEADER := /usr/include/GL/glu.h
 # environment
-KITTY_WINDOW_ID = 1
-# environment
 DISPLAY = :0
 # environment
 USER = arjun
-# makefile (from 'Makefile', line 83)
+# makefile (from 'Makefile', line 56)
 TARGET_SIZE := 64
 # default
 MAKE_VERSION := 4.3
-# makefile (from 'Makefile', line 329)
+# makefile (from 'Makefile', line 302)
 HIGHEST_SM := 86
 # 'override' directive
 .SHELLSTATUS := 0
-# makefile (from 'Makefile', line 165)
+# makefile (from 'Makefile', line 138)
 LDFLAGS := 
 # environment
 DEBUGINFOD_URLS = https://debuginfod.archlinux.org 
 # makefile (from 'findgllib.mk', line 121)
 SAMPLE_ENABLED := 0
 # environment
-KITTY_PID = 14212
-# environment
 _ = /usr/bin/make
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
-# environment
-COLORTERM = truecolor
-# makefile (from 'Makefile', line 316)
+# makefile (from 'Makefile', line 289)
 SMS = 35 37 50 52 60 61 70 75 80 86
-# makefile (from 'Makefile', line 109)
+# makefile (from 'Makefile', line 82)
 HOST_OS := linux
 # makefile (from 'findgllib.mk', line 59)
 CENTOS = $(shell echo $(DISTRO) | grep -i centos      >/dev/null 2>&1; echo $$?)
 # environment
 XDG_SESSION_CLASS = user
-# makefile (from 'Makefile', line 309)
+# makefile (from 'Makefile', line 282)
 LIBRARIES := -lGL -lGLU -lglut
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
@@ -231,10 +217,8 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 VSCODE_IPC_HOOK = /run/user/1000/vscode-e0f92793-1.69.1-main.sock
 # environment
-TERM = xterm-kitty
-# environment
 HG = /usr/bin/hg
-# makefile (from 'Makefile', line 258)
+# makefile (from 'Makefile', line 231)
 BUILD_TYPE := release
 # environment
 XDG_SESSION_ID = 2
@@ -248,21 +232,18 @@ SUFFIXES :=
 VSCODE_CLI = 1
 # environment
 ELECTRON_NO_ATTACH_CONSOLE = 1
- 
 # environment
 XDG_GREETER_DATA_DIR = /var/lib/lightdm-data/arjun
-# makefile (from 'Makefile', line 331)
+# makefile (from 'Makefile', line 304)
 GENCODE_FLAGS = -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_60,code=sm_60 -gencode arch=compute_61,code=sm_61 -gencode arch=compute_70,code=sm_70 -gencode arch=compute_75,code=sm_75 -gencode arch=compute_80,code=sm_80 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_$(HIGHEST_SM),code=compute_$(HIGHEST_SM)
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink guile load
 # makefile (from 'findgllib.mk', line 131)
 GLHEADER := /usr/include/gstreamer-1.0/gst/gl/gl.h /usr/include/GL/gl.h /usr/include/hwloc/gl.h /usr/include/epoxy/gl.h
 # environment
-KITTY_INSTALLATION_DIR = /usr/lib/kitty
-# environment
 GDMSESSION = i3
 # variable set hash-table stats:
-# Load=123/1024=12%, Rehash=0, Collisions=20/400=5%
+# Load=114/1024=11%, Rehash=0, Collisions=20/401=5%
 
 # Pattern-specific Variable Values
 
@@ -270,9 +251,9 @@ GDMSESSION = i3
 
 # Directories
 
-# . (device 66306, inode 11567122): 19 files, no impossibilities.
+# . (device 66306, inode 11567122): 15 files, no impossibilities.
 
-# 19 files, no impossibilities in 1 directories.
+# 15 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -283,7 +264,7 @@ GDMSESSION = i3
 # Not a target:
 simpleCUDA2GL.cu:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-28 09:07:04.175803497
+#  Last modified 2022-08-02 14:34:33.911757523
 #  File has been updated.
 #  Successfully updated.
 
@@ -297,7 +278,7 @@ findgllib.mk:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-28 09:07:04.173803501
+#  Last modified 2022-08-02 12:01:37.206744161
 #  File has been updated.
 #  Successfully updated.
 
@@ -305,32 +286,54 @@ check.deps:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 350):
+#  recipe to execute (from 'Makefile', line 323):
 	@echo "Sample will be waived due to the above missing dependencies"
 
 simpleCUDA2GL: main.o simpleCUDA2GL.o
 #  Implicit rule search has not been done.
-#  Last modified 2022-08-02 11:32:18.70201108
+#  Last modified 2022-08-02 14:33:39.830693654
 #  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 362):
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/10=0%
+#  recipe to execute (from 'Makefile', line 335):
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 	$(EXEC) mkdir -p ../../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 	$(EXEC) cp $@ ../../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 
 simpleCUDA2GL.o: simpleCUDA2GL.cu
 #  Implicit rule search has not been done.
-#  Last modified 2022-08-02 11:32:18.508011534
+#  Implicit/static pattern stem: ''
+ 
+#  Last modified 2022-08-02 14:33:39.699693475
 #  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 359):
+#  Needs to be updated (-q is set).
+# automatic
+# @ := simpleCUDA2GL.o
+# automatic
+# * := 
+# automatic
+# < := simpleCUDA2GL.cu
+# automatic
+# + := simpleCUDA2GL.cu
+# automatic
+# % := 
+# automatic
+# ^ := simpleCUDA2GL.cu
+# automatic
+# ? := simpleCUDA2GL.cu
+# automatic
+# | := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=6/20=30%
+#  recipe to execute (from 'Makefile', line 332):
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 373):
+#  recipe to execute (from 'Makefile', line 346):
 	rm -f simpleCUDA2GL main.o simpleCUDA2GL.o
 	rm -rf ../../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)/simpleCUDA2GL
 
@@ -345,41 +348,45 @@ all: build
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/10=0%
 
 run: build
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 367):
+#  recipe to execute (from 'Makefile', line 340):
 	$(EXEC) ./simpleCUDA2GL
 
 build: simpleCUDA2GL
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/10=0%
 
 # Not a target:
 main.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-28 09:07:04.175803497
+#  Last modified 2022-08-02 14:20:18.038445642
 #  File has been updated.
 #  Successfully updated.
 
 main.o: main.cpp
 #  Implicit rule search has not been done.
-#  Last modified 2022-08-02 11:32:16.248016826
+#  Last modified 2022-08-02 14:20:49.85135509
 #  File has been updated.
 #  Successfully updated.
-#  recipe to execute (from 'Makefile', line 356):
+#  recipe to execute (from 'Makefile', line 329):
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 testrun: build
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 370):
+#  recipe to execute (from 'Makefile', line 343):
 	$(EXEC) ./simpleCUDA2GL -file=ref_simpleCUDA2GL.ppm
 
 clobber: clean
@@ -387,20 +394,26 @@ clobber: clean
 #  Modification time never checked.
 #  File has not been updated.
 
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
 # files hash-table stats:
-# Load=16/1024=2%, Rehash=0, Collisions=0/39=0%
+# Load=16/1024=2%, Rehash=0, Collisions=0/40=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 30 / storage = 391 B / avg = 13 B
-# current buf: size = 8162 B / used = 391 B / count = 30 / avg = 13 B
+# strcache buffers: 1 (0) / strings = 26 / storage = 255 B / avg = 9 B
+# current buf: size = 8162 B / used = 255 B / count = 26 / avg = 9 B
 
-# strcache performance: lookups = 59 / hit rate = 49%
+# strcache performance: lookups = 56 / hit rate = 53%
 # hash-table stats:
-# Load=30/8192=0%, Rehash=0, Collisions=0/59=0%
-# Finished Make data base on Tue Aug  2 11:32:59 2022
+# Load=26/8192=0%, Rehash=0, Collisions=0/56=0%
+# Finished Make data base on Tue Aug  2 15:00:21 2022
 
  

@@ -3,52 +3,58 @@
 // Utilities and system includes
 
 #include <helper_cuda.h>
-
 // clamp x to range [a, b]
 __device__ float clamp(float x, float a, float b) { return max(a, min(b, x)); }
 
 __device__ int clamp(int x, int a, int b) { return max(a, min(b, x)); }
 
 // convert floating point rgb color to 8-bit integer
-__device__ int rgbToInt(float r, float g, float b) {
-  r = clamp(r, 0.0f, 255.0f);
-  g = clamp(g, 0.0f, 255.0f);
-  b = clamp(b, 0.0f, 255.0f);
-  return (int(b) << 16) | (int(g) << 8) | int(r);
+__device__ int rgbToInt(float r, float g, float b)
+{
+    r = clamp(r, 0.0f, 255.0f);
+    g = clamp(g, 0.0f, 255.0f);
+    b = clamp(b, 0.0f, 255.0f);
+    return (int(b) << 16) | (int(g) << 8) | int(r);
 }
 
 /////////////////////////////////////////
-__device__ double dot(const double x[3], const double y[3]) {
+__device__ double dot(const double x[3], const double y[3])
+{
     return (x[0] * y[0]) + (x[1] * y[1]) + (x[2] * y[2]);
 }
 
 __device__ void
-add(const double a[], const double b[], double *resultLocation) {
+add(const double a[], const double b[], double *resultLocation)
+{
     resultLocation[0] = a[0] + b[0];
     resultLocation[1] = a[1] + b[1];
     resultLocation[2] = a[2] + b[2];
 }
 
 __device__ void
-subtract(const double a[], const double b[], double *resultLocation) {
+subtract(const double a[], const double b[], double *resultLocation)
+{
     resultLocation[0] = a[0] - b[0];
     resultLocation[1] = a[1] - b[1];
     resultLocation[2] = a[2] - b[2];
 }
 
-__device__ void multiply(double a, const double b[], double *resultLocation) {
+__device__ void multiply(double a, const double b[], double *resultLocation)
+{
     resultLocation[0] = a * b[0];
     resultLocation[1] = a * b[1];
     resultLocation[2] = a * b[2];
 }
 
-__device__ void canvasToViewport(int x, int y, double *returnLocation) {
+__device__ void canvasToViewport(int x, int y, double *returnLocation)
+{
     returnLocation[0] = x * VIEWPORT_WIDTH / (double)CANVAS_WIDTH;
     returnLocation[1] = y * VIEWPORT_HEIGHT / (double)CANVAS_HEIGHT;
     returnLocation[2] = D;
 }
 
-__device__ void reflectRay(double R[], double N[], double *returnLocation) {
+__device__ void reflectRay(double R[], double N[], double *returnLocation)
+{
     double n_dot_r = dot(N, R);
     double n_multiply_two[3];
     multiply(2, N, n_multiply_two);
@@ -62,7 +68,8 @@ __device__ void reflectRay(double R[], double N[], double *returnLocation) {
 __device__ void intersectRaySphere(double cameraPos[],
                                    double d[],
                                    Sphere sphere,
-                                   double *returnLocation) {
+                                   double *returnLocation)
+{
     double CO[3];
     subtract(cameraPos, sphere.center, CO);
 
@@ -72,7 +79,8 @@ __device__ void intersectRaySphere(double cameraPos[],
 
     double discriminant = b * b - 4 * a * c;
 
-    if (discriminant < 0) {
+    if (discriminant < 0)
+    {
         returnLocation[0] = inf;
         returnLocation[1] = inf;
         return;
@@ -87,20 +95,24 @@ __device__ void intersectRaySphere(double cameraPos[],
 __device__ IntersectionData closestIntersection(double cameraPos[],
                                                 double d[],
                                                 double t_min,
-                                                double t_max) {
+                                                double t_max)
+{
     double closest_t = inf;
     Sphere closestSphere;
     bool isNull = true;
-    for (size_t i = 0; i < ARR_LEN(spheres); ++i) {
+    for (size_t i = 0; i < ARR_LEN(spheres); ++i)
+    {
         double t[2];
         intersectRaySphere(cameraPos, d, spheres[i], t);
 
-        if (t[0] < closest_t && t_min < t[0] && t[0] < t_max) {
+        if (t[0] < closest_t && t_min < t[0] && t[0] < t_max)
+        {
             closest_t = t[0];
             closestSphere = spheres[i];
             isNull = false;
         }
-        if (t[1] < closest_t && t_min < t[1] && t[1] < t_max) {
+        if (t[1] < closest_t && t_min < t[1] && t[1] < t_max)
+        {
             closest_t = t[1];
             closestSphere = spheres[i];
             isNull = false;
@@ -113,18 +125,26 @@ __device__ IntersectionData closestIntersection(double cameraPos[],
 }
 
 __device__ double
-computeLighting(double P[], double N[], double V[], double s) {
+computeLighting(double P[], double N[], double V[], double s)
+{
     double intensity = 0.0;
-    for (size_t i = 0; i < ARR_LEN(lights); ++i) {
-        if (lights[i].lightType == LIGHT_TYPE_AMBIENT) {
+    for (size_t i = 0; i < ARR_LEN(lights); ++i)
+    {
+        if (lights[i].lightType == LIGHT_TYPE_AMBIENT)
+        {
             intensity += lights[i].intensity;
-        } else {
+        }
+        else
+        {
             double L[3];
             double t_max;
-            if (lights[i].lightType == LIGHT_TYPE_POINT) {
+            if (lights[i].lightType == LIGHT_TYPE_POINT)
+            {
                 subtract(lights[i].position, P, L);
                 t_max = 1.0;
-            } else {
+            }
+            else
+            {
                 L[0] = lights[i].direction[0];
                 L[1] = lights[i].direction[1];
                 L[2] = lights[i].direction[2];
@@ -145,7 +165,8 @@ computeLighting(double P[], double N[], double V[], double s) {
                     lights[i].intensity * n_dot_l / (LENGTH(N) * LENGTH(L));
 
             // specular
-            if (s != -1) {
+            if (s != -1)
+            {
                 // 2 * N * dot(N, L) - L
                 double R[3];
 
@@ -166,7 +187,8 @@ __device__ Color traceRay(double cameraPos[3],
                           double d[],
                           double min_t,
                           double max_t,
-                          int recursion_depth) {
+                          int recursion_depth)
+{
     IntersectionData intersectionData =
         closestIntersection(cameraPos, d, min_t, max_t);
     if (intersectionData.isSphereNull)
@@ -214,32 +236,41 @@ __device__ Color traceRay(double cameraPos[3],
                     reflectedColor.b * intersectionData.sphere.reflectiveness)};
 }
 
-
 /////////////////////////////////////////
+__device__ int mapRange(int inStart, int inEnd, int outStart, int outEnd, int n)
+{
+    return outStart + ((outEnd - outStart) / (inEnd - inStart)) * (n - inStart);
+}
+__global__ void cudaProcess(unsigned int *g_odata, int imgw)
+{
+    extern __shared__ uchar4 sdata[];
 
-__global__ void cudaProcess(unsigned int *g_odata, int imgw) {
-  extern __shared__ uchar4 sdata[];
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+    int bw = blockDim.x;
+    int bh = blockDim.y;
+    int x = blockIdx.x * bw + tx;
+    int y = blockIdx.y * bh + ty;
+    /*
+     * THIS IS HOW WE DRAW A PIXEL:
+     * g_odata[y * imgw + x] = rgbToInt(0, 255, 255);
+     */
+    ////////// IT HAPPENS HERE
+    /*
+    if (x < 2 || x > 510 || y < 2 || y > 510)
+    {
+        g_odata[y * imgw + x] = rgbToInt(0, 255, 0);
+        return;
+    }*/
 
-  int tx = threadIdx.x;
-  int ty = threadIdx.y;
-  int bw = blockDim.x;
-  int bh = blockDim.y;
-  int x = blockIdx.x * bw + tx;
-  int y = blockIdx.y * bh + ty;
-
-  uchar4 c4 = make_uchar4((x & 0x20) ? 100 : 0, 0, (y & 0x20) ? 100 : 0, 0);
-  g_odata[y * imgw + x] = rgbToInt(c4.z, c4.y, c4.x);
-  // this is how we draw a pixel
-  g_odata[y * imgw + x] = rgbToInt(0, 255, 255);
-
-  ////////// IT HAPPENS HERE
     double d[3];
     canvasToViewport(x, y, d);
     Color c = traceRay(cameraPosition, d, 1, inf, RECURSION_DEPTH_FOR_REFLECTIONS);
     g_odata[y * imgw + x] = rgbToInt(c.r, c.g, c.b);
-
 }
+
 extern "C" void launch_cudaProcess(dim3 grid, dim3 block, int sbytes,
-                                   unsigned int *g_odata, int imgw) {
-  cudaProcess<<<grid, block, sbytes>>>(g_odata, imgw);
+                                   unsigned int *g_odata, int imgw)
+{
+    cudaProcess<<<grid, block, sbytes>>>(g_odata, imgw);
 }

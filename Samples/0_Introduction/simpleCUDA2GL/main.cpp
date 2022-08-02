@@ -26,6 +26,12 @@
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
 
+unsigned extern int window_width = 512;
+unsigned extern int window_height = 512;
+unsigned extern int image_width = 512;
+unsigned extern int image_height = 512;
+
+
 // CUDA utilities and system includes
 #include <helper_cuda.h>
 #include <helper_functions.h>
@@ -33,7 +39,7 @@
 
 // Shared Library Test Functions
 #define MAX_EPSILON 10
-#define REFRESH_DELAY 10  // ms
+#define REFRESH_DELAY 10 // ms
 
 const char *sSDKname = "simpleCUDA2GL";
 
@@ -43,12 +49,8 @@ unsigned int g_TotalErrors = 0;
 CheckRender *g_CheckRender = NULL;
 
 ////////////////////////////////////////////////////////////////////////////////
-// constants / global variables
-unsigned int window_width = 512;
-unsigned int window_height = 512;
-unsigned int image_width = 512;
-unsigned int image_height = 512;
-int iGLUTWindowHandle = 0;  // handle to the GLUT window
+
+int iGLUTWindowHandle = 0; // handle to the GLUT window
 
 // pbo and fbo variables
 #ifdef USE_TEXSUBIMAGE2D
@@ -56,7 +58,7 @@ GLuint pbo_dest;
 struct cudaGraphicsResource *cuda_pbo_dest_resource;
 #else
 unsigned int *cuda_dest_resource;
-GLuint shDrawTex;  // draws a texture
+GLuint shDrawTex; // draws a texture
 struct cudaGraphicsResource *cuda_tex_result_resource;
 #endif
 
@@ -68,8 +70,8 @@ unsigned int num_texels;
 unsigned int num_values;
 
 // (offscreen) render target fbo variables
-GLuint tex_screen;      // where we render the image
-GLuint tex_cudaResult;  // where we will copy the CUDA result
+GLuint tex_screen;     // where we render the image
+GLuint tex_cudaResult; // where we will copy the CUDA result
 
 char *ref_file = NULL;
 bool enable_cuda = true;
@@ -128,7 +130,8 @@ void mainMenu(int i);
 ////////////////////////////////////////////////////////////////////////////////
 //! Create PBO
 ////////////////////////////////////////////////////////////////////////////////
-void createPBO(GLuint *pbo, struct cudaGraphicsResource **pbo_resource) {
+void createPBO(GLuint *pbo, struct cudaGraphicsResource **pbo_resource)
+{
   // set up vertex data parameter
   num_texels = image_width * image_height;
   num_values = num_texels * 4;
@@ -150,7 +153,8 @@ void createPBO(GLuint *pbo, struct cudaGraphicsResource **pbo_resource) {
   SDK_CHECK_ERROR_GL();
 }
 
-void deletePBO(GLuint *pbo) {
+void deletePBO(GLuint *pbo)
+{
   glDeleteBuffers(1, pbo);
   SDK_CHECK_ERROR_GL();
   *pbo = 0;
@@ -200,7 +204,8 @@ static const char *glsl_draw_fragshader_src =
 #endif
 
 // copy image and process using CUDA
-void generateCUDAImage() {
+void generateCUDAImage()
+{
   // run the Cuda kernel
   unsigned int *out_data;
 
@@ -255,7 +260,8 @@ void generateCUDAImage() {
 }
 
 // display image to the screen as textured quad
-void displayImage(GLuint texture) {
+void displayImage(GLuint texture)
+{
   glBindTexture(GL_TEXTURE_2D, texture);
   glEnable(GL_TEXTURE_2D);
   glDisable(GL_DEPTH_TEST);
@@ -276,7 +282,7 @@ void displayImage(GLuint texture) {
 #ifndef USE_TEXSUBIMAGE2D
   glUseProgram(shDrawTex);
   GLint id = glGetUniformLocation(shDrawTex, "texImage");
-  glUniform1i(id, 0);  // texture unit 0 to "texImage"
+  glUniform1i(id, 0); // texture unit 0 to "texImage"
   SDK_CHECK_ERROR_GL();
 #endif
 
@@ -305,10 +311,12 @@ void displayImage(GLuint texture) {
 ////////////////////////////////////////////////////////////////////////////////
 //! Display callback
 ////////////////////////////////////////////////////////////////////////////////
-void display() {
+void display()
+{
   sdkStartTimer(&timer);
 
-  if (enable_cuda) {
+  if (enable_cuda)
+  {
     generateCUDAImage();
     displayImage(tex_cudaResult);
   }
@@ -322,10 +330,12 @@ void display() {
   glutSwapBuffers();
 
   // If specified, Check rendering against reference,
-  if (ref_file && g_CheckRender && g_CheckRender->IsQAReadback()) {
+  if (ref_file && g_CheckRender && g_CheckRender->IsQAReadback())
+  {
     static int pass = 0;
 
-    if (pass > 0) {
+    if (pass > 0)
+    {
       g_CheckRender->readback(window_width, window_height);
       char currentOutputPPM[256];
       sprintf(currentOutputPPM, "kilt.ppm");
@@ -333,7 +343,8 @@ void display() {
 
       if (!g_CheckRender->PPMvsPPM(currentOutputPPM,
                                    sdkFindFilePath(ref_file, pArgv[0]),
-                                   MAX_EPSILON, 0.30f)) {
+                                   MAX_EPSILON, 0.30f))
+      {
         g_TotalErrors++;
       }
 
@@ -344,7 +355,8 @@ void display() {
   }
 
   // Update fps counter, fps/title display and log
-  if (++fpsCount == fpsLimit) {
+  if (++fpsCount == fpsLimit)
+  {
     char cTitle[256];
     float fps = 1000.0f / sdkGetAverageTimerValue(&timer);
     sprintf(cTitle, "CUDA GL Post Processing (%d x %d): %.1f fps", window_width,
@@ -357,7 +369,8 @@ void display() {
   }
 }
 
-void timerEvent(int value) {
+void timerEvent(int value)
+{
   glutPostRedisplay();
   glutTimerFunc(REFRESH_DELAY, timerEvent, 0);
 }
@@ -365,30 +378,35 @@ void timerEvent(int value) {
 ////////////////////////////////////////////////////////////////////////////////
 //! Keyboard events handler
 ////////////////////////////////////////////////////////////////////////////////
-void keyboard(unsigned char key, int /*x*/, int /*y*/) {
-  switch (key) {
-    case (27):
-      Cleanup(EXIT_SUCCESS);
-      break;
+void keyboard(unsigned char key, int /*x*/, int /*y*/)
+{
+  switch (key)
+  {
+  case (27):
+    Cleanup(EXIT_SUCCESS);
+    break;
 
-    case ' ':
-      enable_cuda ^= 1;
+  case ' ':
+    enable_cuda ^= 1;
 #ifdef USE_TEXTURE_RGBA8UI
 
-      if (enable_cuda) {
-        glClearColorIuiEXT(128, 128, 128, 255);
-      } else {
-        glClearColor(0.5, 0.5, 0.5, 1.0);
-      }
+    if (enable_cuda)
+    {
+      glClearColorIuiEXT(128, 128, 128, 255);
+    }
+    else
+    {
+      glClearColor(0.5, 0.5, 0.5, 1.0);
+    }
 
 #endif
-      break;
+    break;
   }
 }
 
-void reshape(int w, int h) {
-  window_width = w;
-  window_height = h;
+void reshape(int w, int h)
+{
+  glutReshapeWindow(window_width, window_height);
 }
 
 void mainMenu(int i) { keyboard((unsigned char)i, 0, 0); }
@@ -397,7 +415,8 @@ void mainMenu(int i) { keyboard((unsigned char)i, 0, 0); }
 //!
 ////////////////////////////////////////////////////////////////////////////////
 void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x,
-                      unsigned int size_y) {
+                      unsigned int size_y)
+{
   // create a texture
   glGenTextures(1, tex_cudaResult);
   glBindTexture(GL_TEXTURE_2D, *tex_cudaResult);
@@ -423,23 +442,20 @@ void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x,
 #endif
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//!
-////////////////////////////////////////////////////////////////////////////////
-void deleteTexture(GLuint *tex) {
+void deleteTexture(GLuint *tex)
+{
   glDeleteTextures(1, tex);
   SDK_CHECK_ERROR_GL();
 
   *tex = 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Program main
-////////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 #if defined(__linux__)
   char *Xstatus = getenv("DISPLAY");
-  if (Xstatus == NULL) {
+  if (Xstatus == NULL)
+  {
     printf("Waiving execution as X server is not running\n");
     exit(EXIT_WAIVED);
   }
@@ -448,7 +464,8 @@ int main(int argc, char **argv) {
 
   printf("%s Starting...\n\n", argv[0]);
 
-  if (checkCmdLineFlag(argc, (const char **)argv, "file")) {
+  if (checkCmdLineFlag(argc, (const char **)argv, "file"))
+  {
     getCmdLineArgumentString(argc, (const char **)argv, "file", &ref_file);
   }
 
@@ -457,7 +474,8 @@ int main(int argc, char **argv) {
 
   // use command-line specified CUDA device, otherwise use device with highest
   // Gflops/s
-  if (checkCmdLineFlag(argc, (const char **)argv, "device")) {
+  if (checkCmdLineFlag(argc, (const char **)argv, "device"))
+  {
     printf("[%s]\n", argv[0]);
     printf("   Does not explicitly support -device=n\n");
     printf(
@@ -467,10 +485,13 @@ int main(int argc, char **argv) {
     exit(EXIT_WAIVED);
   }
 
-  if (ref_file) {
+  if (ref_file)
+  {
     printf("(Test with OpenGL verification)\n");
     runStdProgram(argc, argv);
-  } else {
+  }
+  else
+  {
     printf("(Interactive OpenGL Demo)\n");
     runStdProgram(argc, argv);
   }
@@ -478,10 +499,8 @@ int main(int argc, char **argv) {
   exit(EXIT_SUCCESS);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//!
-////////////////////////////////////////////////////////////////////////////////
-void FreeResource() {
+void FreeResource()
+{
   sdkDeleteTimer(&timer);
 
 // unregister this buffer object with CUDA
@@ -495,7 +514,8 @@ void FreeResource() {
   deleteTexture(&tex_screen);
   deleteTexture(&tex_cudaResult);
 
-  if (iGLUTWindowHandle) {
+  if (iGLUTWindowHandle)
+  {
     glutDestroyWindow(iGLUTWindowHandle);
   }
 
@@ -503,7 +523,8 @@ void FreeResource() {
   printf("simpleCUDA2GL Exiting...\n");
 }
 
-void Cleanup(int iExitCode) {
+void Cleanup(int iExitCode)
+{
   FreeResource();
   printf("PPM Images are %s\n",
          (iExitCode == EXIT_SUCCESS) ? "Matching" : "Not Matching");
@@ -514,12 +535,14 @@ void Cleanup(int iExitCode) {
 //!
 ////////////////////////////////////////////////////////////////////////////////
 GLuint compileGLSLprogram(const char *vertex_shader_src,
-                          const char *fragment_shader_src) {
+                          const char *fragment_shader_src)
+{
   GLuint v, f, p = 0;
 
   p = glCreateProgram();
 
-  if (vertex_shader_src) {
+  if (vertex_shader_src)
+  {
     v = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(v, 1, &vertex_shader_src, NULL);
     glCompileShader(v);
@@ -528,7 +551,8 @@ GLuint compileGLSLprogram(const char *vertex_shader_src,
     GLint compiled = 0;
     glGetShaderiv(v, GL_COMPILE_STATUS, &compiled);
 
-    if (!compiled) {
+    if (!compiled)
+    {
       //#ifdef NV_REPORT_COMPILE_ERRORS
       char temp[256] = "";
       glGetShaderInfoLog(v, 256, NULL, temp);
@@ -536,12 +560,15 @@ GLuint compileGLSLprogram(const char *vertex_shader_src,
       //#endif
       glDeleteShader(v);
       return 0;
-    } else {
+    }
+    else
+    {
       glAttachShader(p, v);
     }
   }
 
-  if (fragment_shader_src) {
+  if (fragment_shader_src)
+  {
     f = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(f, 1, &fragment_shader_src, NULL);
     glCompileShader(f);
@@ -550,7 +577,8 @@ GLuint compileGLSLprogram(const char *vertex_shader_src,
     GLint compiled = 0;
     glGetShaderiv(f, GL_COMPILE_STATUS, &compiled);
 
-    if (!compiled) {
+    if (!compiled)
+    {
       //#ifdef NV_REPORT_COMPILE_ERRORS
       char temp[256] = "";
       glGetShaderInfoLog(f, 256, NULL, temp);
@@ -558,7 +586,9 @@ GLuint compileGLSLprogram(const char *vertex_shader_src,
       //#endif
       glDeleteShader(f);
       return 0;
-    } else {
+    }
+    else
+    {
       glAttachShader(p, f);
     }
   }
@@ -570,7 +600,8 @@ GLuint compileGLSLprogram(const char *vertex_shader_src,
 
   glGetProgramiv(p, GL_INFO_LOG_LENGTH, (GLint *)&infologLength);
 
-  if (infologLength > 0) {
+  if (infologLength > 0)
+  {
     char *infoLog = (char *)malloc(infologLength);
     glGetProgramInfoLog(p, infologLength, (GLsizei *)&charsWritten, infoLog);
     printf("Shader compilation error: %s\n", infoLog);
@@ -584,7 +615,8 @@ GLuint compileGLSLprogram(const char *vertex_shader_src,
 //! Allocate the "render target" of CUDA
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef USE_TEXSUBIMAGE2D
-void initCUDABuffers() {
+void initCUDABuffers()
+{
   // set up vertex data parameter
   num_texels = image_width * image_height;
   num_values = num_texels * 4;
@@ -598,7 +630,8 @@ void initCUDABuffers() {
 ////////////////////////////////////////////////////////////////////////////////
 //!
 ////////////////////////////////////////////////////////////////////////////////
-void initGLBuffers() {
+void initGLBuffers()
+{
 // create pbo
 #ifdef USE_TEXSUBIMAGE2D
   createPBO(&pbo_dest, &cuda_pbo_dest_resource);
@@ -618,11 +651,13 @@ void initGLBuffers() {
 ////////////////////////////////////////////////////////////////////////////////
 //! Run standard demo loop with or without GL verification
 ////////////////////////////////////////////////////////////////////////////////
-void runStdProgram(int argc, char **argv) {
+void runStdProgram(int argc, char **argv)
+{
   // First initialize OpenGL context, so we can properly set the GL for CUDA.
   // This is necessary in order to achieve optimal performance with OpenGL/CUDA
   // interop.
-  if (false == initGL(&argc, argv)) {
+  if (false == initGL(&argc, argv))
+  {
     return;
   }
 
@@ -649,7 +684,8 @@ void runStdProgram(int argc, char **argv) {
 #endif
 
   // Creating the Auto-Validation Code
-  if (ref_file) {
+  if (ref_file)
+  {
     g_CheckRender = new CheckBackBuffer(window_width, window_height, 4);
     g_CheckRender->setPixelFormat(GL_RGBA);
     g_CheckRender->setExecPath(argv[0]);
@@ -672,7 +708,8 @@ void runStdProgram(int argc, char **argv) {
 ////////////////////////////////////////////////////////////////////////////////
 //! Initialize GL
 ////////////////////////////////////////////////////////////////////////////////
-bool initGL(int *argc, char **argv) {
+bool initGL(int *argc, char **argv)
+{
   // Create GL context
   glutInit(argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -682,7 +719,8 @@ bool initGL(int *argc, char **argv) {
   // initialize necessary OpenGL extensions
   if (!isGLVersionSupported(2, 0) ||
       !areGLExtensionsSupported("GL_ARB_pixel_buffer_object "
-                                "GL_EXT_framebuffer_object")) {
+                                "GL_EXT_framebuffer_object"))
+  {
     printf("ERROR: Support for necessary OpenGL extensions missing.");
     fflush(stderr);
     return false;
