@@ -1,1 +1,0 @@
-{"buildTargets":["all","build","check.deps","clean","clobber","main.o","run","simpleCUDA2GL","simpleCUDA2GL.o","testrun"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
