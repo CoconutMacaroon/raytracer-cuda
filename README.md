@@ -30,4 +30,6 @@ This contains the actual raytracer and a bit of pixel drawing code. It has a han
 
 A header file for the raytracer. We define a handful of things here.
 
-The `CUDA_LICENSE` file is for the portion of the codebase that uses code from the NVIDIA CUDA samples. Specifically, this is all files within the `Common` directory, the `CUDA_LICENSE` file, the `findgllib.mk` file, the `Makefile`, most of the `main.cpp` file, the two `clamp` functions, the `rgbToInt` function, the `launch_cudaProcess` function, and part of the `ccudaProcess` fucntion in `simpleCUDA2GL.cu`, t
+-----
+
+The `CUDA_LICENSE` file is for the portion of the codebase that uses code from the NVIDIA CUDA samples. Specifically, this is all files within the `Common` directory, the `CUDA_LICENSE` file, the `findgllib.mk` file, the `Makefile`, most of the `main.cpp` file, the two `clamp` functions, the `rgbToInt` function, the `launch_cudaProcess` function, and part of the `ccudaProcess` fucntion in `simpleCUDA2GL.cu`.
