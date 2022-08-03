@@ -208,14 +208,15 @@ __global__ void cudaProcess(unsigned int *g_odata, int imgw) {
     g_odata[y * imgw + x] = rgbToInt(c.r, c.g, c.b);
 }
 
-__global__ void moveCamera(double distance) {
-    cameraPosition[2] += distance;
+__global__ void moveCamera(double z, double x) {
+    cameraPosition[0] += x;
+    cameraPosition[2] += z;
 }
 
 extern "C" void launch_cudaProcess(dim3 grid, dim3 block, int sbytes, unsigned int *g_odata, int imgw) {
     cudaProcess<<<grid, block, sbytes>>>(g_odata, imgw);
 }
 
-extern void moveCam(double distance) {
-    moveCamera<<<1, 1>>>(distance);
+extern void moveCam(double z, double x) {
+    moveCamera<<<1, 1>>>(z, x);
 }

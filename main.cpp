@@ -375,10 +375,16 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/) {
             Cleanup(EXIT_SUCCESS);
             break;
         case (KEY_W):
-            moveCam(0.025);
+            moveCam(MOVEMENT_INTERVAL, 0);
             break;
         case (KEY_S):
-            moveCam(-0.025);
+            moveCam(-MOVEMENT_INTERVAL,0);
+            break;
+        case (KEY_A):
+            moveCam(0, -MOVEMENT_INTERVAL);
+            break;
+        case (KEY_D):
+            moveCam(0, MOVEMENT_INTERVAL);
             break;
 #ifdef USE_TEXTURE_RGBA8UI
 

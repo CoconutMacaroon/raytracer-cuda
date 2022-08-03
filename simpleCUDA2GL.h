@@ -4,6 +4,7 @@
 #define LIGHT_TYPE_POINT 2
 #define LIGHT_TYPE_DIRECTIONAL 3
 
+#define MOVEMENT_INTERVAL 0.025
 typedef unsigned char byte;
 
 #define LENGTH(n) (sqrt(dot(n, n)))
@@ -100,4 +101,4 @@ typedef struct
     byte r, g, b;
 } PixelRenderData;
 
-extern void moveCam(double distance);
+extern void moveCam(double z, double x);
