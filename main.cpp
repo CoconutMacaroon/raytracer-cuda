@@ -13,6 +13,9 @@
 // OpenGL Graphics includes
 #include <helper_gl.h>
 
+// list of keys
+#include "chars.h"
+
 #if defined(__APPLE__) || defined(MACOSX)
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #include <GLUT/glut.h>
@@ -368,16 +371,13 @@ void timerEvent(int value) {
 
 void keyboard(unsigned char key, int /*x*/, int /*y*/) {
     switch (key) {
-        case (27):
-            // the 'ESC' key
+        case (KEY_ESC):
             Cleanup(EXIT_SUCCESS);
             break;
-        case (119):
-            // the 'W' key
+        case (KEY_W):
             moveCam(0.025);
             break;
-        case (115):
-            // the 'S' key
+        case (KEY_S):
             moveCam(-0.025);
             break;
         case ' ':
