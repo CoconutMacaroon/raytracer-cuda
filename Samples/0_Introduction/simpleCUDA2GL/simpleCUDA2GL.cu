@@ -255,7 +255,7 @@ __global__ void cudaProcess(unsigned int *g_odata, int imgw)
      * THIS IS HOW WE DRAW A PIXEL:
      * g_odata[y * imgw + x] = rgbToInt(0, 255, 255);
      */
-    ////////// IT HAPPENS HERE
+
     /*
     if (x < 2 || x > 510 || y < 2 || y > 510)
     {
