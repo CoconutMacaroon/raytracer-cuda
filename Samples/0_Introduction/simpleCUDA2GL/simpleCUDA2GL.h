@@ -99,4 +99,5 @@ typedef struct
     int x, y;
     byte r, g, b;
 } PixelRenderData;
+
 extern void moveCam(double distance);

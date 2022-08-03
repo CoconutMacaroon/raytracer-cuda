@@ -17,20 +17,17 @@ __device__ int rgbToInt(float r, float g, float b) {
     return (int(b) << 16) | (int(g) << 8) | int(r);
 }
 
-/////////////////////////////////////////
 __device__ double dot(const double x[3], const double y[3]) {
     return (x[0] * y[0]) + (x[1] * y[1]) + (x[2] * y[2]);
 }
 
-__device__ void
-add(const double a[], const double b[], double *resultLocation) {
+__device__ void add(const double a[], const double b[], double *resultLocation) {
     resultLocation[0] = a[0] + b[0];
     resultLocation[1] = a[1] + b[1];
     resultLocation[2] = a[2] + b[2];
 }
 
-__device__ void
-subtract(const double a[], const double b[], double *resultLocation) {
+__device__ void subtract(const double a[], const double b[], double *resultLocation) {
     resultLocation[0] = a[0] - b[0];
     resultLocation[1] = a[1] - b[1];
     resultLocation[2] = a[2] - b[2];
@@ -59,10 +56,7 @@ __device__ void reflectRay(double R[], double N[], double *returnLocation) {
     subtract(dot_times_multiply, R, returnLocation);
 }
 
-__device__ void intersectRaySphere(double cameraPos[],
-                                   double d[],
-                                   Sphere sphere,
-                                   double *returnLocation) {
+__device__ void intersectRaySphere(double cameraPos[], double d[], Sphere sphere, double *returnLocation) {
     double CO[3];
     subtract(cameraPos, sphere.center, CO);
 
@@ -84,10 +78,7 @@ __device__ void intersectRaySphere(double cameraPos[],
     returnLocation[1] = (double) ((-b - discriminantSqrt) / (2 * a));
 }
 
-__device__ IntersectionData closestIntersection(double cameraPos[],
-                                                double d[],
-                                                double t_min,
-                                                double t_max) {
+__device__ IntersectionData closestIntersection(double cameraPos[], double d[], double t_min, double t_max) {
     double closest_t = inf;
     Sphere closestSphere;
     bool isNull = true;
@@ -106,14 +97,11 @@ __device__ IntersectionData closestIntersection(double cameraPos[],
             isNull = false;
         }
     }
-    IntersectionData data = {.sphere = closestSphere,
-            .closest_t = closest_t,
-            .isSphereNull = isNull};
+    IntersectionData data = {.sphere = closestSphere, .closest_t = closest_t, .isSphereNull = isNull};
     return data;
 }
 
-__device__ double
-computeLighting(double P[], double N[], double V[], double s) {
+__device__ double computeLighting(double P[], double N[], double V[], double s) {
     double intensity = 0.0;
     for (size_t i = 0; i < ARR_LEN(lights); ++i) {
         if (lights[i].lightType == LIGHT_TYPE_AMBIENT) {
@@ -131,8 +119,7 @@ computeLighting(double P[], double N[], double V[], double s) {
                 t_max = DBL_MAX;
             }
             // shadow check
-            IntersectionData intersectionData =
-                    closestIntersection(P, L, 0.001, t_max);
+            IntersectionData intersectionData = closestIntersection(P, L, 0.001, t_max);
 
             if (!intersectionData.isSphereNull)
                 continue;
@@ -141,8 +128,7 @@ computeLighting(double P[], double N[], double V[], double s) {
             double n_dot_l = dot(N, L);
 
             if (n_dot_l > 0)
-                intensity +=
-                        lights[i].intensity * n_dot_l / (LENGTH(N) * LENGTH(L));
+                intensity += lights[i].intensity * n_dot_l / (LENGTH(N) * LENGTH(L));
 
             // specular
             if (s != -1) {
@@ -154,21 +140,15 @@ computeLighting(double P[], double N[], double V[], double s) {
                 double r_dot_v = dot(R, V);
 
                 if (r_dot_v > 0)
-                    intensity += lights[i].intensity *
-                                 pow(r_dot_v / (LENGTH(R) * LENGTH(V)), s);
+                    intensity += lights[i].intensity * pow(r_dot_v / (LENGTH(R) * LENGTH(V)), s);
             }
         }
     }
     return intensity;
 }
 
-__device__ Color traceRay(double cameraPos[3],
-                          double d[],
-                          double min_t,
-                          double max_t,
-                          int recursion_depth) {
-    IntersectionData intersectionData =
-            closestIntersection(cameraPos, d, min_t, max_t);
+__device__ Color traceRay(double cameraPos[3], double d[], double min_t, double max_t, int recursion_depth) {
+    IntersectionData intersectionData = closestIntersection(cameraPos, d, min_t, max_t);
     if (intersectionData.isSphereNull)
         return BACKGROUND_COLOR;
 
@@ -186,12 +166,10 @@ __device__ Color traceRay(double cameraPos[3],
 
     double tmp3[3];
     multiply(-1.0, d, tmp3);
-    double lighting =
-            computeLighting(P, N, tmp3, intersectionData.sphere.specular);
-    Color localColor = {
-            ROUND_COLOR(intersectionData.sphere.color.r * lighting),
-            ROUND_COLOR(intersectionData.sphere.color.g * lighting),
-            ROUND_COLOR(intersectionData.sphere.color.b * lighting)};
+    double lighting = computeLighting(P, N, tmp3, intersectionData.sphere.specular);
+    Color localColor = {ROUND_COLOR(intersectionData.sphere.color.r * lighting),
+                        ROUND_COLOR(intersectionData.sphere.color.g * lighting),
+                        ROUND_COLOR(intersectionData.sphere.color.b * lighting)};
 
     if (recursion_depth <= 0 || intersectionData.sphere.reflectiveness <= 0)
         return localColor;
@@ -202,21 +180,12 @@ __device__ Color traceRay(double cameraPos[3],
     reflectRay(temp, N2, R);
 
     Color reflectedColor = traceRay(P, R, 0.001, inf, recursion_depth - 1);
-    return (Color) {
-            ROUND_COLOR(localColor.r *
-                        (1 - intersectionData.sphere.reflectiveness) +
-                        reflectedColor.r * intersectionData.sphere.reflectiveness),
-            ROUND_COLOR(localColor.g *
-                        (1 - intersectionData.sphere.reflectiveness) +
-                        reflectedColor.g * intersectionData.sphere.reflectiveness),
-            ROUND_COLOR(localColor.b *
-                        (1 - intersectionData.sphere.reflectiveness) +
-                        reflectedColor.b * intersectionData.sphere.reflectiveness)};
-}
-
-/////////////////////////////////////////
-__device__ int mapRange(int inStart, int inEnd, int outStart, int outEnd, int n) {
-    return outStart + ((outEnd - outStart) / (inEnd - inStart)) * (n - inStart);
+    return (Color) {ROUND_COLOR(localColor.r * (1 - intersectionData.sphere.reflectiveness) +
+                                reflectedColor.r * intersectionData.sphere.reflectiveness), ROUND_COLOR(
+                            localColor.g * (1 - intersectionData.sphere.reflectiveness) +
+                            reflectedColor.g * intersectionData.sphere.reflectiveness), ROUND_COLOR(
+                            localColor.b * (1 - intersectionData.sphere.reflectiveness) +
+                            reflectedColor.b * intersectionData.sphere.reflectiveness)};
 }
 
 __global__ void cudaProcess(unsigned int *g_odata, int imgw) {
@@ -238,15 +207,15 @@ __global__ void cudaProcess(unsigned int *g_odata, int imgw) {
     Color c = traceRay(cameraPosition, d, 1, inf, RECURSION_DEPTH_FOR_REFLECTIONS);
     g_odata[y * imgw + x] = rgbToInt(c.r, c.g, c.b);
 }
-__global__ void camMove(double distance) {
+
+__global__ void moveCamera(double distance) {
     cameraPosition[2] += distance;
 }
 
-extern "C" void launch_cudaProcess(dim3 grid, dim3 block, int sbytes,
-                                   unsigned int *g_odata, int imgw) {
+extern "C" void launch_cudaProcess(dim3 grid, dim3 block, int sbytes, unsigned int *g_odata, int imgw) {
     cudaProcess<<<grid, block, sbytes>>>(g_odata, imgw);
-  //  a<<<1, 1>>>();
 }
+
 extern void moveCam(double distance) {
-    camMove<<<1, 1>>>(distance);
+    moveCamera<<<1, 1>>>(distance);
 }
