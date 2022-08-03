@@ -29,10 +29,6 @@
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
 #include "simpleCUDA2GL.h"
-unsigned extern int window_width = CANVAS_WIDTH;
-unsigned extern int window_height = CANVAS_HEIGHT;
-unsigned extern int image_width = window_width;
-unsigned extern int image_height = window_height;
 
 // CUDA utilities and system includes
 #include "helper_cuda.h"
@@ -139,7 +135,7 @@ void mainMenu(int i);
 
 void createPBO(GLuint *pbo, struct cudaGraphicsResource **pbo_resource) {
     // set up vertex data parameter
-    num_texels = image_width * image_height;
+    num_texels = CANVAS_WIDTH * CANVAS_HEIGHT;
     num_values = num_texels * 4;
     size_tex_data = sizeof(GLubyte) * num_values;
     void *data = malloc(size_tex_data);
@@ -227,9 +223,9 @@ void generateCUDAImage() {
     // calculate grid size
     dim3 block(16, 16, 1);
     // dim3 block(16, 16, 1);
-    dim3 grid(image_width / block.x, image_height / block.y, 1);
+    dim3 grid(CANVAS_WIDTH / block.x, CANVAS_HEIGHT / block.y, 1);
     // execute CUDA kernel
-    launch_cudaProcess(grid, block, 0, out_data, image_width);
+    launch_cudaProcess(grid, block, 0, out_data, CANVAS_WIDTH);
 
 // CUDA generated data in cuda memory or in a mapped PBO made of BGRA 8 bits
 // 2 solutions, here :
@@ -241,7 +237,7 @@ void generateCUDAImage() {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, pbo_dest);
 
     glBindTexture(GL_TEXTURE_2D, tex_cudaResult);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image_width, image_height, GL_RGBA,
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, GL_RGBA,
                     GL_UNSIGNED_BYTE, NULL);
     SDK_CHECK_ERROR_GL();
     glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
@@ -254,7 +250,7 @@ void generateCUDAImage() {
     checkCudaErrors(cudaGraphicsSubResourceGetMappedArray(
         &texture_ptr, cuda_tex_result_resource, 0, 0));
 
-    int num_texels = image_width * image_height;
+    int num_texels = CANVAS_WIDTH * CANVAS_HEIGHT;
     int num_values = num_texels * 4;
     int size_tex_data = sizeof(GLubyte) * num_values;
     checkCudaErrors(cudaMemcpyToArray(texture_ptr, 0, 0, cuda_dest_resource,
@@ -280,7 +276,7 @@ void displayImage(GLuint texture) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glViewport(0, 0, window_width, window_height);
+    glViewport(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 // if the texture is a 8 bits UI, scale the fetch with a GLSL shader
 #ifndef USE_TEXSUBIMAGE2D
@@ -334,7 +330,7 @@ void display() {
         static int pass = 0;
 
         if (pass > 0) {
-            g_CheckRender->readback(window_width, window_height);
+            g_CheckRender->readback(CANVAS_WIDTH, CANVAS_HEIGHT);
             char currentOutputPPM[256];
             sprintf(currentOutputPPM, "kilt.ppm");
             g_CheckRender->savePPM(currentOutputPPM, true, NULL);
@@ -355,8 +351,8 @@ void display() {
     if (++fpsCount == fpsLimit) {
         char cTitle[256];
         float fps = 1000.0f / sdkGetAverageTimerValue(&timer);
-        sprintf(cTitle, "CUDA GL Post Processing (%d x %d): %.1f fps", window_width,
-                window_height, fps);
+        sprintf(cTitle, "CUDA GL Post Processing (%d x %d): %.1f fps", CANVAS_WIDTH,
+                CANVAS_HEIGHT, fps);
         glutSetWindowTitle(cTitle);
         // printf("%s\n", cTitle);
         fpsCount = 0;
@@ -403,7 +399,7 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/) {
 }
 
 void reshape(int w, int h) {
-    glutReshapeWindow(window_width, window_height);
+    glutReshapeWindow(CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
 void mainMenu(int i) { keyboard((unsigned char) i, 0, 0); }
@@ -586,7 +582,7 @@ GLuint compileGLSLprogram(const char *vertex_shader_src,
 void initCUDABuffers()
 {
     // set up vertex data parameter
-    num_texels = image_width * image_height;
+    num_texels = CANVAS_WIDTH * CANVAS_HEIGHT;
     num_values = num_texels * 4;
     size_tex_data = sizeof(GLubyte) * num_values;
     checkCudaErrors(cudaMalloc((void **)&cuda_dest_resource, size_tex_data));
@@ -601,7 +597,7 @@ void initGLBuffers() {
     createPBO(&pbo_dest, &cuda_pbo_dest_resource);
 #endif
     // create texture that will receive the result of CUDA
-    createTextureDst(&tex_cudaResult, image_width, image_height);
+    createTextureDst(&tex_cudaResult, CANVAS_WIDTH, CANVAS_HEIGHT);
     // load shader programs
     shDraw = compileGLSLprogram(NULL, glsl_draw_fragshader_src);
 
@@ -645,7 +641,7 @@ void runStdProgram(int argc, char **argv) {
 
     // Creating the Auto-Validation Code
     if (ref_file) {
-        g_CheckRender = new CheckBackBuffer(window_width, window_height, 4);
+        g_CheckRender = new CheckBackBuffer(CANVAS_WIDTH, CANVAS_HEIGHT, 4);
         g_CheckRender->setPixelFormat(GL_RGBA);
         g_CheckRender->setExecPath(argv[0]);
         g_CheckRender->EnableQAReadback(true);
@@ -668,7 +664,7 @@ bool initGL(int *argc, char **argv) {
     // Create GL context
     glutInit(argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_ALPHA | GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitWindowSize(window_width, window_height);
+    glutInitWindowSize(CANVAS_WIDTH, CANVAS_HEIGHT);
     iGLUTWindowHandle = glutCreateWindow("CUDA OpenGL post-processing");
 
     // initialize necessary OpenGL extensions
@@ -689,12 +685,12 @@ bool initGL(int *argc, char **argv) {
     glDisable(GL_DEPTH_TEST);
 
     // viewport
-    glViewport(0, 0, window_width, window_height);
+    glViewport(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     // projection
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, (GLfloat) window_width / (GLfloat) window_height, 0.1f,
+    gluPerspective(60.0, (GLfloat) CANVAS_WIDTH / (GLfloat) CANVAS_HEIGHT, 0.1f,
                    10.0f);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
