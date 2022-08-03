@@ -245,11 +245,15 @@ __global__ void cudaProcess(unsigned int *g_odata, int imgw) {
     Color c = traceRay(cameraPosition, d, 1, inf, RECURSION_DEPTH_FOR_REFLECTIONS);
     g_odata[y * imgw + x] = rgbToInt(c.r, c.g, c.b);
 }
-__global__ void a() {
-    cameraPosition[2] -= 0.1;
+__global__ void camMove(double distance) {
+    cameraPosition[2] += distance;
 }
+
 extern "C" void launch_cudaProcess(dim3 grid, dim3 block, int sbytes,
                                    unsigned int *g_odata, int imgw) {
     cudaProcess<<<grid, block, sbytes>>>(g_odata, imgw);
-    a<<<1, 1>>>();
+  //  a<<<1, 1>>>();
+}
+extern void moveCam(double distance) {
+    camMove<<<1, 1>>>(distance);
 }

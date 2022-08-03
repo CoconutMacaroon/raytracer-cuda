@@ -380,9 +380,17 @@ void timerEvent(int value) {
 void keyboard(unsigned char key, int /*x*/, int /*y*/) {
     switch (key) {
         case (27):
+            // the 'ESC' key
             Cleanup(EXIT_SUCCESS);
             break;
-
+        case (119):
+            // the 'W' key
+            moveCam(0.025);
+            break;
+        case (115):
+            // the 'S' key
+            moveCam(-0.025);
+            break;
         case ' ':
             enable_cuda ^= 1;
 #ifdef USE_TEXTURE_RGBA8UI
