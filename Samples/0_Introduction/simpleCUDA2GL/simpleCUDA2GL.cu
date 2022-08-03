@@ -233,13 +233,6 @@ __global__ void cudaProcess(unsigned int *g_odata, int imgw) {
      * g_odata[y * imgw + x] = rgbToInt(0, 255, 255);
      */
 
-    /*
-    if (x < 2 || x > 510 || y < 2 || y > 510)
-    {
-        g_odata[y * imgw + x] = rgbToInt(0, 255, 0);
-        return;
-    }*/
-
     double d[3];
     canvasToViewport(x - (CANVAS_WIDTH / 2), y - (CANVAS_HEIGHT / 2), d);
     Color c = traceRay(cameraPosition, d, 1, inf, RECURSION_DEPTH_FOR_REFLECTIONS);
