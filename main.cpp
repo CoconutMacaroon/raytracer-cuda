@@ -380,8 +380,6 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/) {
         case (KEY_S):
             moveCam(-0.025);
             break;
-        case ' ':
-            enable_cuda ^= 1;
 #ifdef USE_TEXTURE_RGBA8UI
 
             if (enable_cuda)
