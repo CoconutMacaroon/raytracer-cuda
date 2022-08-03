@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "streambuf": "cpp",
-        "cmath": "cpp"
-    }
-}

@@ -1,0 +1,4 @@
+*.o
+simpleCUDA2GL
+.vscode
+.idea
