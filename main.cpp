@@ -634,11 +634,6 @@ void runStdProgram(int argc, char **argv) {
     glutKeyboardUpFunc(keyUp);
     glutTimerFunc(REFRESH_DELAY, timerEvent, 0);
 
-    // create menu
-    glutCreateMenu(mainMenu);
-    glutAddMenuEntry("Quit (esc)", '\033');
-    glutAttachMenu(GLUT_RIGHT_BUTTON);
-
     initGLBuffers();
 #ifndef USE_TEXSUBIMAGE2D
     initCUDABuffers();
