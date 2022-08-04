@@ -1,11 +1,14 @@
 #include <float.h>
+#include <limits.h>
+
+typedef unsigned char byte;
+#define BYTE_MAX UCHAR_MAX
 
 #define LIGHT_TYPE_AMBIENT 1
 #define LIGHT_TYPE_POINT 2
 #define LIGHT_TYPE_DIRECTIONAL 3
 
 #define MOVEMENT_INTERVAL 0.025
-typedef unsigned char byte;
 
 #define LENGTH(n) (sqrt(dot(n, n)))
 #define ARR_LEN(a) (sizeof(a) / sizeof((a)[0]))
@@ -102,3 +105,4 @@ typedef struct
 } PixelRenderData;
 
 extern void moveCam(double z, double y, double x);
+void keyActions();

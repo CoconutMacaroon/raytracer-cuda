@@ -213,8 +213,8 @@ __global__ void moveCamera(double z, double y, double x) {
     cameraPosition[1] += y;
     cameraPosition[2] += z;
 }
-
 extern "C" void launch_cudaProcess(dim3 grid, dim3 block, int sbytes, unsigned int *g_odata, int imgw) {
+    keyActions();
     cudaProcess<<<grid, block, sbytes>>>(g_odata, imgw);
 }
 

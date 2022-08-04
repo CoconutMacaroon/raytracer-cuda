@@ -1,3 +1,6 @@
+#define KEY_STATES_SIZE BYTE_MAX
+bool* keyStates;
+
 // USE_TEXSUBIMAGE2D uses glTexSubImage2D() to update the final result
 // commenting it will make the sample use the other way :
 // map a texture in CUDA and blit the result into it
@@ -97,8 +100,7 @@ StopWatchInterface *timer = NULL;
 #endif
 GLuint shDraw;
 
-extern "C" void launch_cudaProcess(dim3 grid, dim3 block, int sbytes,
-                                   unsigned int *g_odata, int imgw);
+extern "C" void launch_cudaProcess(dim3 grid, dim3 block, int sbytes, unsigned int *g_odata, int imgw);
 
 // Forward declarations
 void runStdProgram(int argc, char **argv);
@@ -118,8 +120,7 @@ void deletePBO(GLuint *pbo);
 
 #endif
 
-void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x,
-                      unsigned int size_y);
+void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x, unsigned int size_y);
 
 void deleteTexture(GLuint *tex);
 
@@ -127,8 +128,6 @@ void deleteTexture(GLuint *tex);
 void display();
 
 void idle();
-
-void keyboard(unsigned char key, int x, int y);
 
 void reshape(int w, int h);
 
@@ -152,8 +151,7 @@ void createPBO(GLuint *pbo, struct cudaGraphicsResource **pbo_resource) {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // register this buffer object with CUDA
-    checkCudaErrors(cudaGraphicsGLRegisterBuffer(pbo_resource, *pbo,
-                                                 cudaGraphicsMapFlagsNone));
+    checkCudaErrors(cudaGraphicsGLRegisterBuffer(pbo_resource, *pbo, cudaGraphicsMapFlagsNone));
 
     SDK_CHECK_ERROR_GL();
 }
@@ -166,9 +164,8 @@ void deletePBO(GLuint *pbo) {
 
 #endif
 
-const GLenum fbo_targets[] = {
-        GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT,
-        GL_COLOR_ATTACHMENT2_EXT, GL_COLOR_ATTACHMENT3_EXT};
+const GLenum fbo_targets[] = {GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT,
+                              GL_COLOR_ATTACHMENT3_EXT};
 
 #ifndef USE_TEXSUBIMAGE2D
 static const char *glsl_drawtex_vertshader_src =
@@ -216,8 +213,7 @@ void generateCUDAImage() {
 #ifdef USE_TEXSUBIMAGE2D
     checkCudaErrors(cudaGraphicsMapResources(1, &cuda_pbo_dest_resource, 0));
     size_t num_bytes;
-    checkCudaErrors(cudaGraphicsResourceGetMappedPointer(
-            (void **) &out_data, &num_bytes, cuda_pbo_dest_resource));
+    checkCudaErrors(cudaGraphicsResourceGetMappedPointer((void **) &out_data, &num_bytes, cuda_pbo_dest_resource));
 // printf("CUDA mapped pointer of pbo_out: May access %ld bytes, expected %d\n",
 // num_bytes, size_tex_data);
 #else
@@ -240,8 +236,7 @@ void generateCUDAImage() {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, pbo_dest);
 
     glBindTexture(GL_TEXTURE_2D, tex_cudaResult);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, GL_RGBA,
-                    GL_UNSIGNED_BYTE, NULL);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     SDK_CHECK_ERROR_GL();
     glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
@@ -338,9 +333,7 @@ void display() {
             sprintf(currentOutputPPM, "kilt.ppm");
             g_CheckRender->savePPM(currentOutputPPM, true, NULL);
 
-            if (!g_CheckRender->PPMvsPPM(currentOutputPPM,
-                                         sdkFindFilePath(ref_file, pArgv[0]),
-                                         MAX_EPSILON, 0.30f)) {
+            if (!g_CheckRender->PPMvsPPM(currentOutputPPM, sdkFindFilePath(ref_file, pArgv[0]), MAX_EPSILON, 0.30f)) {
                 g_TotalErrors++;
             }
 
@@ -354,8 +347,7 @@ void display() {
     if (++fpsCount == fpsLimit) {
         char cTitle[256];
         float fps = 1000.0f / sdkGetAverageTimerValue(&timer);
-        sprintf(cTitle, "CUDA + OpenGL Real-time raytracing (%d x %d): %.1f fps", CANVAS_WIDTH,
-                CANVAS_HEIGHT, fps);
+        sprintf(cTitle, "CUDA + OpenGL Real-time raytracing (%d x %d): %.1f fps", CANVAS_WIDTH, CANVAS_HEIGHT, fps);
         glutSetWindowTitle(cTitle);
         // printf("%s\n", cTitle);
         fpsCount = 0;
@@ -368,6 +360,7 @@ void timerEvent(int value) {
     glutPostRedisplay();
     glutTimerFunc(REFRESH_DELAY, timerEvent, 0);
 }
+
 void arrowInput(int key, int x, int y) {
     // base code for arrow key input from here:
     // https://community.khronos.org/t/what-are-the-codes-for-arrow-keys-to-use-in-glut-keyboard-callback-function/26457/2
@@ -381,47 +374,23 @@ void arrowInput(int key, int x, int y) {
     }
 }
 
-void keyboard(unsigned char key, int /*x*/, int /*y*/) {
-    switch (key) {
-        case (KEY_ESC):
-            Cleanup(EXIT_SUCCESS);
-            break;
-        case (KEY_W):
-            moveCam(MOVEMENT_INTERVAL, 0, 0);
-            break;
-        case (KEY_S):
-            moveCam(-MOVEMENT_INTERVAL, 0, 0);
-            break;
-        case (KEY_A):
-            moveCam(0, 0, -MOVEMENT_INTERVAL);
-            break;
-        case (KEY_D):
-            moveCam(0, 0, MOVEMENT_INTERVAL);
-            break;
-#ifdef USE_TEXTURE_RGBA8UI
+void keyActions() {
+    // TODO: do this for the arrow keys
+    if (keyStates[KEY_ESC]) Cleanup(EXIT_SUCCESS);
+    if (keyStates[KEY_W]) moveCam(MOVEMENT_INTERVAL, 0, 0);
+    if (keyStates[KEY_S]) moveCam(-MOVEMENT_INTERVAL, 0, 0);
+    if (keyStates[KEY_A]) moveCam(0, 0, -MOVEMENT_INTERVAL);
+    if (keyStates[KEY_D]) moveCam(0, 0, MOVEMENT_INTERVAL);
 
-            if (enable_cuda)
-            {
-                glClearColorIuiEXT(128, 128, 128, 255);
-            }
-            else
-            {
-                glClearColor(0.5, 0.5, 0.5, 1.0);
-            }
-
-#endif
-            break;
-    }
 }
 
 void reshape(int w, int h) {
     glutReshapeWindow(CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
-void mainMenu(int i) { keyboard((unsigned char) i, 0, 0); }
+ void mainMenu(int i) { return; }
 
-void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x,
-                      unsigned int size_y) {
+void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x, unsigned int size_y) {
     // create a texture
     glGenTextures(1, tex_cudaResult);
     glBindTexture(GL_TEXTURE_2D, *tex_cudaResult);
@@ -433,8 +402,7 @@ void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 #ifdef USE_TEXSUBIMAGE2D
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size_x, size_y, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size_x, size_y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     SDK_CHECK_ERROR_GL();
 #else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8UI_EXT, size_x, size_y, 0,
@@ -464,7 +432,7 @@ int main(int argc, char **argv) {
     }
     setenv("DISPLAY", ":0", 0);
 #endif
-
+    keyStates = (bool*) malloc(sizeof(bool) * KEY_STATES_SIZE);
     printf("%s Starting...\n\n", argv[0]);
 
     if (checkCmdLineFlag(argc, (const char **) argv, "file")) {
@@ -479,9 +447,8 @@ int main(int argc, char **argv) {
     if (checkCmdLineFlag(argc, (const char **) argv, "device")) {
         printf("[%s]\n", argv[0]);
         printf("   Does not explicitly support -device=n\n");
-        printf(
-                "   This sample requires OpenGL.  Only -file=<reference> are "
-                "supported\n");
+        printf("   This sample requires OpenGL.  Only -file=<reference> are "
+               "supported\n");
         printf("exiting...\n");
         exit(EXIT_WAIVED);
     }
@@ -493,7 +460,7 @@ int main(int argc, char **argv) {
         printf("(Interactive OpenGL Demo)\n");
         runStdProgram(argc, argv);
     }
-
+    free(keyStates);
     exit(EXIT_SUCCESS);
 }
 
@@ -521,13 +488,11 @@ void FreeResource() {
 
 void Cleanup(int iExitCode) {
     FreeResource();
-    printf("PPM Images are %s\n",
-           (iExitCode == EXIT_SUCCESS) ? "Matching" : "Not Matching");
+    printf("PPM Images are %s\n", (iExitCode == EXIT_SUCCESS) ? "Matching" : "Not Matching");
     exit(iExitCode);
 }
 
-GLuint compileGLSLprogram(const char *vertex_shader_src,
-                          const char *fragment_shader_src) {
+GLuint compileGLSLprogram(const char *vertex_shader_src, const char *fragment_shader_src) {
     GLuint v, f, p = 0;
 
     p = glCreateProgram();
@@ -624,6 +589,14 @@ void initGLBuffers() {
     SDK_CHECK_ERROR_GL();
 }
 
+void keyDown(byte key, int x, int y) {
+    keyStates[key] = true;
+}
+
+void keyUp(byte key, int x, int y) {
+    keyStates[key] = false;
+}
+
 // Run standard demo loop with or without GL verification
 void runStdProgram(int argc, char **argv) {
     // First initialize OpenGL context, so we can properly set the GL for CUDA.
@@ -641,9 +614,11 @@ void runStdProgram(int argc, char **argv) {
 
     // register callbacks
     glutDisplayFunc(display);
-    glutKeyboardFunc(keyboard);
     glutSpecialFunc(arrowInput);
     glutReshapeFunc(reshape);
+    glutIgnoreKeyRepeat(true);
+    glutKeyboardFunc(keyDown);
+    glutKeyboardUpFunc(keyUp);
     glutTimerFunc(REFRESH_DELAY, timerEvent, 0);
 
     // create menu
@@ -664,11 +639,10 @@ void runStdProgram(int argc, char **argv) {
         g_CheckRender->EnableQAReadback(true);
     }
 
-    printf(
-            "\n"
-            "\tControls\n"
-            "\t(right click mouse button for Menu)\n"
-            "\t[esc] - Quit\n\n");
+    printf("\n"
+           "\tControls\n"
+           "\t(right click mouse button for Menu)\n"
+           "\t[esc] - Quit\n\n");
 
     // start rendering mainloop
     glutMainLoop();
@@ -685,9 +659,8 @@ bool initGL(int *argc, char **argv) {
     iGLUTWindowHandle = glutCreateWindow("CUDA OpenGL post-processing");
 
     // initialize necessary OpenGL extensions
-    if (!isGLVersionSupported(2, 0) ||
-        !areGLExtensionsSupported("GL_ARB_pixel_buffer_object "
-                                  "GL_EXT_framebuffer_object")) {
+    if (!isGLVersionSupported(2, 0) || !areGLExtensionsSupported("GL_ARB_pixel_buffer_object "
+                                                                 "GL_EXT_framebuffer_object")) {
         printf("ERROR: Support for necessary OpenGL extensions missing.");
         fflush(stderr);
         return false;
@@ -707,8 +680,7 @@ bool initGL(int *argc, char **argv) {
     // projection
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, (GLfloat) CANVAS_WIDTH / (GLfloat) CANVAS_HEIGHT, 0.1f,
-                   10.0f);
+    gluPerspective(60.0, (GLfloat) CANVAS_WIDTH / (GLfloat) CANVAS_HEIGHT, 0.1f, 10.0f);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
