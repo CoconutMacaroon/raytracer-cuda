@@ -4,13 +4,7 @@ This is [my original raytracer](https://github.com/coconutmacaroon/raytracer), b
 
 ## Compiling
 
-I'm assuming you've cloned the repo and are in the main directory. In theory, you can just do `make clean all && ./simpleCUDA2GL`. Unfortunately, this did not work for me. To get it to compile, I had to do `GLPATH=/usr/lib make clean all`, and then `optirun ./simpleCUDA2GL` as I have hybrid graphics in my laptop. Additionally, my GPU has a compute level of 6.1, so I added `SMS="61"` to my make command. If you don't, it will just compile for all architectures (which will work, it is just slower).
-
-The final command I ran to build and run was
-
-```bash
-GLPATH=/usr/lib make clean all SMS="61" && optirun ./simpleCUDA2GL
-```
+I'm assuming you've cloned the repo and are in the main directory. To build it, just run `make`, and to run it, do `./bin/main`. If you have hybrid graphics, you may need to run it with `optirun ./bin/main` (`optirun` is from [Bumblebee](https://wiki.archlinux.org/title/Bumblebee)).
 
 ## Explanation of code files
 
@@ -32,4 +26,4 @@ A header file for the raytracer. We define a handful of things here.
 
 -----
 
-The `CUDA_LICENSE` file is for the portion of the codebase that uses code from the NVIDIA CUDA samples. Specifically, this is all files within the `Common` directory, the `CUDA_LICENSE` file, the `findgllib.mk` file, the `Makefile`, most of the `main.cpp` file, the two `clamp` functions, the `rgbToInt` function, the `launch_cudaProcess` function, and part of the `ccudaProcess` fucntion in `simpleCUDA2GL.cu`.
+The `CUDA_LICENSE` file is for the portion of the codebase that uses code from the NVIDIA CUDA samples. Specifically, this is all files within the `Common` directory, the `CUDA_LICENSE` file, the `findgllib.mk` file, most of the `main.cpp` file, the two `clamp` functions, the `rgbToInt` function, the `launch_cudaProcess` function, and part of the `ccudaProcess` fucntion in `simpleCUDA2GL.cu`.
