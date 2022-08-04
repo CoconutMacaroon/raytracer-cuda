@@ -42,6 +42,11 @@ A simple Makefile to compile the code with optimizations
 
 `clean` - Removes the build file(s)
 
+## Screenshots
+
+![image](https://user-images.githubusercontent.com/45187468/182931133-a8b6f50e-6923-4ef1-8a7a-d7d9cda7c4f4.png)
+
+
 -----
 
 The `CUDA_LICENSE` file is for the portion of the codebase that uses code from the NVIDIA CUDA samples. Specifically, this is all files within the `Common` directory, the `CUDA_LICENSE` file, most of the `main.cpp` file, the two `clamp` functions, the `rgbToInt` function, the `launch_cudaProcess` function, and part of the `ccudaProcess` fucntion in `simpleCUDA2GL.cu`.
