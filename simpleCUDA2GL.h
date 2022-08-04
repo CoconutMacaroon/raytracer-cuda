@@ -41,8 +41,8 @@ typedef struct Light
 } Light;
 __device__ Color BACKGROUND_COLOR = {0, 0, 0};
 
-const short CANVAS_WIDTH = 1024;
-const short CANVAS_HEIGHT = 1024;
+const short CANVAS_WIDTH = 1280;
+const short CANVAS_HEIGHT = 720;
 
 __device__ double D = 1;
 // TODO: I may need to swap CANVAS_WIDTH and CANVAS_HEIGHT
@@ -101,4 +101,4 @@ typedef struct
     byte r, g, b;
 } PixelRenderData;
 
-extern void moveCam(double z, double x);
+extern void moveCam(double z, double y, double x);

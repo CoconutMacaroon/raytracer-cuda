@@ -368,6 +368,18 @@ void timerEvent(int value) {
     glutPostRedisplay();
     glutTimerFunc(REFRESH_DELAY, timerEvent, 0);
 }
+void arrowInput(int key, int x, int y) {
+    // base code for arrow key input from here:
+    // https://community.khronos.org/t/what-are-the-codes-for-arrow-keys-to-use-in-glut-keyboard-callback-function/26457/2
+    switch (key) {
+        case (GLUT_KEY_UP):
+            moveCam(0, MOVEMENT_INTERVAL, 0);
+            break;
+        case (GLUT_KEY_DOWN):
+            moveCam(0, -MOVEMENT_INTERVAL, 0);
+            break;
+    }
+}
 
 void keyboard(unsigned char key, int /*x*/, int /*y*/) {
     switch (key) {
@@ -375,16 +387,16 @@ void keyboard(unsigned char key, int /*x*/, int /*y*/) {
             Cleanup(EXIT_SUCCESS);
             break;
         case (KEY_W):
-            moveCam(MOVEMENT_INTERVAL, 0);
+            moveCam(MOVEMENT_INTERVAL, 0, 0);
             break;
         case (KEY_S):
-            moveCam(-MOVEMENT_INTERVAL,0);
+            moveCam(-MOVEMENT_INTERVAL, 0, 0);
             break;
         case (KEY_A):
-            moveCam(0, -MOVEMENT_INTERVAL);
+            moveCam(0, 0, -MOVEMENT_INTERVAL);
             break;
         case (KEY_D):
-            moveCam(0, MOVEMENT_INTERVAL);
+            moveCam(0, 0, MOVEMENT_INTERVAL);
             break;
 #ifdef USE_TEXTURE_RGBA8UI
 
@@ -630,6 +642,7 @@ void runStdProgram(int argc, char **argv) {
     // register callbacks
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(arrowInput);
     glutReshapeFunc(reshape);
     glutTimerFunc(REFRESH_DELAY, timerEvent, 0);
 
