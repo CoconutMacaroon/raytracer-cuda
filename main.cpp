@@ -1,5 +1,6 @@
 #define KEY_STATES_SIZE BYTE_MAX
-bool* keyStates;
+bool *keyStates;
+bool upArrowPressed = false, downArrowPressed = false;
 
 // USE_TEXSUBIMAGE2D uses glTexSubImage2D() to update the final result
 // commenting it will make the sample use the other way :
@@ -361,34 +362,11 @@ void timerEvent(int value) {
     glutTimerFunc(REFRESH_DELAY, timerEvent, 0);
 }
 
-void arrowInput(int key, int x, int y) {
-    // base code for arrow key input from here:
-    // https://community.khronos.org/t/what-are-the-codes-for-arrow-keys-to-use-in-glut-keyboard-callback-function/26457/2
-    switch (key) {
-        case (GLUT_KEY_UP):
-            moveCam(0, MOVEMENT_INTERVAL, 0);
-            break;
-        case (GLUT_KEY_DOWN):
-            moveCam(0, -MOVEMENT_INTERVAL, 0);
-            break;
-    }
-}
-
-void keyActions() {
-    // TODO: do this for the arrow keys
-    if (keyStates[KEY_ESC]) Cleanup(EXIT_SUCCESS);
-    if (keyStates[KEY_W]) moveCam(MOVEMENT_INTERVAL, 0, 0);
-    if (keyStates[KEY_S]) moveCam(-MOVEMENT_INTERVAL, 0, 0);
-    if (keyStates[KEY_A]) moveCam(0, 0, -MOVEMENT_INTERVAL);
-    if (keyStates[KEY_D]) moveCam(0, 0, MOVEMENT_INTERVAL);
-
-}
-
 void reshape(int w, int h) {
     glutReshapeWindow(CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
- void mainMenu(int i) { return; }
+void mainMenu(int i) { return; }
 
 void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x, unsigned int size_y) {
     // create a texture
@@ -432,7 +410,7 @@ int main(int argc, char **argv) {
     }
     setenv("DISPLAY", ":0", 0);
 #endif
-    keyStates = (bool*) malloc(sizeof(bool) * KEY_STATES_SIZE);
+    keyStates = (bool *) malloc(sizeof(bool) * KEY_STATES_SIZE);
     printf("%s Starting...\n\n", argv[0]);
 
     if (checkCmdLineFlag(argc, (const char **) argv, "file")) {
@@ -589,12 +567,46 @@ void initGLBuffers() {
     SDK_CHECK_ERROR_GL();
 }
 
+void specialUp(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_UP:
+            upArrowPressed = false;
+            break;
+        case GLUT_KEY_DOWN:
+            downArrowPressed = false;
+            break;
+    }
+}
+
+void specialDown(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_UP:
+            upArrowPressed = true;
+            break;
+        case GLUT_KEY_DOWN:
+            downArrowPressed = true;
+            break;
+    }
+}
+
 void keyDown(byte key, int x, int y) {
     keyStates[key] = true;
 }
 
 void keyUp(byte key, int x, int y) {
     keyStates[key] = false;
+}
+
+void keyActions() {
+    // TODO: do this for the arrow keys
+    if (keyStates[KEY_ESC]) Cleanup(EXIT_SUCCESS);
+    if (keyStates[KEY_W]) moveCam(MOVEMENT_INTERVAL, 0, 0);
+    if (keyStates[KEY_S]) moveCam(-MOVEMENT_INTERVAL, 0, 0);
+    if (keyStates[KEY_A]) moveCam(0, 0, -MOVEMENT_INTERVAL);
+    if (keyStates[KEY_D]) moveCam(0, 0, MOVEMENT_INTERVAL);
+
+    if (upArrowPressed) moveCam(0, MOVEMENT_INTERVAL, 0);
+    if (downArrowPressed) moveCam(0, -MOVEMENT_INTERVAL, 0);
 }
 
 // Run standard demo loop with or without GL verification
@@ -614,7 +626,8 @@ void runStdProgram(int argc, char **argv) {
 
     // register callbacks
     glutDisplayFunc(display);
-    glutSpecialFunc(arrowInput);
+    glutSpecialFunc(specialDown);
+    glutSpecialUpFunc(specialUp);
     glutReshapeFunc(reshape);
     glutIgnoreKeyRepeat(true);
     glutKeyboardFunc(keyDown);

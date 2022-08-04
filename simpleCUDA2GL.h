@@ -8,7 +8,7 @@ typedef unsigned char byte;
 #define LIGHT_TYPE_POINT 2
 #define LIGHT_TYPE_DIRECTIONAL 3
 
-#define MOVEMENT_INTERVAL 0.025
+#define MOVEMENT_INTERVAL 0.05
 
 #define LENGTH(n) (sqrt(dot(n, n)))
 #define ARR_LEN(a) (sizeof(a) / sizeof((a)[0]))
