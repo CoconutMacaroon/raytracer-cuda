@@ -354,7 +354,7 @@ void display() {
     if (++fpsCount == fpsLimit) {
         char cTitle[256];
         float fps = 1000.0f / sdkGetAverageTimerValue(&timer);
-        sprintf(cTitle, "CUDA GL Post Processing (%d x %d): %.1f fps", CANVAS_WIDTH,
+        sprintf(cTitle, "CUDA + OpenGL Real-time raytracing (%d x %d): %.1f fps", CANVAS_WIDTH,
                 CANVAS_HEIGHT, fps);
         glutSetWindowTitle(cTitle);
         // printf("%s\n", cTitle);
