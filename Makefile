@@ -6,8 +6,8 @@ SPHERE_GENERATOR=genSpheres.py
 
 all: $(BIN_FOLDER)/$(MAIN_EXECUTABLE)
 
-spheres: genSpheres.py
-	/usr/bin/env python3 genSpheres.py > spheres
+spheres: $(SPHERE_GENERATOR)
+	/usr/bin/env python3 $(SPHERE_GENERATOR) > spheres
 
 $(BIN_FOLDER)/$(MAIN_EXECUTABLE): $(SOURCE_FILES) $(HEADER_FILES) spheres Makefile
 	mkdir -pv $(BIN_FOLDER)
