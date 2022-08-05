@@ -1,10 +1,10 @@
 # CUDA + OpenGL Rayracer
 
-This is [my original raytracer](https://github.com/coconutmacaroon/raytracer), but re-written in CUDA with OpenGL instead of Java. This is _significantly_ faster. The Java version takes up to several seconds to render one frame (on my machine, at 1024x1024). In contrast, this version can do around 40FPS (again, at 1024x1024 on my machine).
+This is [my original raytracer](https://github.com/coconutmacaroon/raytracer), but re-written in CUDA with OpenGL instead of Java. This is _significantly_ faster. The Java version takes up to several seconds to render one frame (on my machine, at 1024x1024). In contrast, this version can do around 40FPS (again, at 1024x1024 on my machine) with just three spheres. For 32 spheres, I get about 15 FPS at 1280x720.
 
 ## System Requirements
 
-* NVIDIA GPU that supports CUDA - I suggest Pascal (GTX 10xx) or newer, but the 9xx series will most likely work. I got around 40 FPS on a GTX 1050 at 1024x1024.
+* NVIDIA GPU that supports CUDA - I suggest Pascal (GTX 10xx) or newer, but the 9xx series will most likely work. I got around 40 FPS on a GTX 1050 at 1024x1024 with three spheres, with 32 spheres I got about 15 FPS.
 * Linux distro - I tested on Arch Linux with the proprietary NVIDA drivers (`nvidia-dkms` for me), but other distros should work fine too. The required dependencies for compiling will vary based on your distro, so I will not list the packages here. However, expect to need MESA/OpenGL, GLUT, the NVIDIA CUDA toolkit, the NVIDIA proprietary drives, and a C++ compiler (I suggest `g++`, but Clang might work too). Other packages may be required as well.
 
   For a number of reasons, this is not setup to run on Windows and will almost certainly need modifications to work on Windows. I have not tested WSL2 and I suggest a full distro, but WSL2 may or may not work.
@@ -12,6 +12,10 @@ This is [my original raytracer](https://github.com/coconutmacaroon/raytracer), b
 ## Compiling
 
 I'm assuming you've cloned the repo and are in the main directory. To build it, just run `make`, and to run it, do `./bin/main`. If you have hybrid graphics, you may need to run it with `optirun ./bin/main` (`optirun` is from [Bumblebee](https://wiki.archlinux.org/title/Bumblebee)). Note that `make` will automatically build the executable optimized for your specific system - it may not run on other systems.
+
+## TODO:
+- [x] Multiple random spheres
+- [ ] Antialiasing
 
 ## Explanation of files
 
@@ -50,6 +54,7 @@ Generates the data (color, location, etc.) for the spheres that will be rendered
 
 ![image](https://user-images.githubusercontent.com/45187468/182931133-a8b6f50e-6923-4ef1-8a7a-d7d9cda7c4f4.png)
 
+![image](https://user-images.githubusercontent.com/45187468/183159694-db7c988f-bfb7-4e97-91e5-f3de55d3dea3.png)
 
 -----
 
