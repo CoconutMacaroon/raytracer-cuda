@@ -5,7 +5,7 @@ This is [my original raytracer](https://github.com/coconutmacaroon/raytracer), b
 ## System Requirements
 
 * NVIDIA GPU that supports CUDA - I suggest Pascal (GTX 10xx) or newer, but the 9xx series will most likely work. I got around 40 FPS on a GTX 1050 at 1024x1024.
-* Linux distro - I tested on Arch Linux with the proprietary NVIDA drivers (`nvidia-dkms` for me), but other distros should work fine too. The required dependencies for compiling will vary based on your distro, so I will not list the packages here. However, expect to need MESA/OpenGL, GLUT, the NVIDIA CUDA toolkit, the NVIDIA proprietary drives, and a C++ compiler (I suggest `g++`, but Clang might work too). Other packages may be required as well.
+* Linux distro - I tested on Arch Linux with the proprietary NVIDA drivers (`nvidia-dkms` for me), but other distros should work fine too. The required dependencies for compiling will vary based on your distro, so I will not list the packages here. However, expect to need MESA/OpenGL, GLUT, the NVIDIA CUDA toolkit, the NVIDIA proprietary drives, and a C++ compiler (I suggest `g++`, but Clang might work too). You will also need the `freetype2` library. Other packages may be required as well.
 
   For a number of reasons, this is not setup to run on Windows and will almost certainly need modifications to work on Windows. I have not tested WSL2 and I suggest a full distro, but WSL2 may or may not work.
 
@@ -34,6 +34,10 @@ Defines the character codes for some keyboard keys
 ### `Makefile`
 
 A simple Makefile to compile the code with optimizations
+
+### `genSpheres.py`
+
+Generates the data (color, location, etc.) for the spheres that will be rendered. This is done automatically in the Makefile
 
 #### Makefile targets:
 `all` - See `$(BIN_FOLDER)/$(MAIN_EXECUTABLE)`

@@ -1,3 +1,4 @@
+bool capsLockOn;
 #define KEY_STATES_SIZE BYTE_MAX
 bool *keyStates;
 bool upArrowPressed = false, downArrowPressed = false;
@@ -131,8 +132,6 @@ void display();
 void idle();
 
 void reshape(int w, int h);
-
-void mainMenu(int i);
 
 #ifdef USE_TEXSUBIMAGE2D
 
@@ -366,8 +365,6 @@ void reshape(int w, int h) {
     glutReshapeWindow(CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
-void mainMenu(int i) { return; }
-
 void createTextureDst(GLuint *tex_cudaResult, unsigned int size_x, unsigned int size_y) {
     // create a texture
     glGenTextures(1, tex_cudaResult);
@@ -576,6 +573,7 @@ void specialUp(int key, int x, int y) {
             downArrowPressed = false;
             break;
     }
+    capsLockOn = glutGetModifiers() == GLUT_ACTIVE_SHIFT;
 }
 
 void specialDown(int key, int x, int y) {
@@ -587,23 +585,26 @@ void specialDown(int key, int x, int y) {
             downArrowPressed = true;
             break;
     }
+    capsLockOn = glutGetModifiers() == GLUT_ACTIVE_SHIFT;
 }
 
 void keyDown(byte key, int x, int y) {
     keyStates[key] = true;
+    capsLockOn = glutGetModifiers() == GLUT_ACTIVE_SHIFT;
 }
 
 void keyUp(byte key, int x, int y) {
     keyStates[key] = false;
+    capsLockOn = glutGetModifiers() == GLUT_ACTIVE_SHIFT;
 }
 
 void keyActions() {
     // TODO: do this for the arrow keys
     if (keyStates[KEY_ESC]) Cleanup(EXIT_SUCCESS);
-    if (keyStates[KEY_W]) moveCam(MOVEMENT_INTERVAL, 0, 0);
-    if (keyStates[KEY_S]) moveCam(-MOVEMENT_INTERVAL, 0, 0);
-    if (keyStates[KEY_A]) moveCam(0, 0, -MOVEMENT_INTERVAL);
-    if (keyStates[KEY_D]) moveCam(0, 0, MOVEMENT_INTERVAL);
+    if (keyStates[KEY_W - (capsLockOn ? 32 : 0)]) moveCam(MOVEMENT_INTERVAL, 0, 0);
+    if (keyStates[KEY_S - (capsLockOn ? 32 : 0)]) moveCam(-MOVEMENT_INTERVAL, 0, 0);
+    if (keyStates[KEY_A - (capsLockOn ? 32 : 0)]) moveCam(0, 0, -MOVEMENT_INTERVAL);
+    if (keyStates[KEY_D - (capsLockOn ? 32 : 0)]) moveCam(0, 0, MOVEMENT_INTERVAL);
 
     if (upArrowPressed) moveCam(0, MOVEMENT_INTERVAL, 0);
     if (downArrowPressed) moveCam(0, -MOVEMENT_INTERVAL, 0);
@@ -614,9 +615,8 @@ void runStdProgram(int argc, char **argv) {
     // First initialize OpenGL context, so we can properly set the GL for CUDA.
     // This is necessary in order to achieve optimal performance with OpenGL/CUDA
     // interop.
-    if (false == initGL(&argc, argv)) {
+    if (!initGL(&argc, argv))
         return;
-    }
 
     // Now initialize CUDA context (GL context has been created already)
     findCudaDevice(argc, (const char **) argv);
@@ -646,11 +646,6 @@ void runStdProgram(int argc, char **argv) {
         g_CheckRender->setExecPath(argv[0]);
         g_CheckRender->EnableQAReadback(true);
     }
-
-    printf("\n"
-           "\tControls\n"
-           "\t(right click mouse button for Menu)\n"
-           "\t[esc] - Quit\n\n");
 
     // start rendering mainloop
     glutMainLoop();
@@ -703,3 +698,6 @@ bool initGL(int *argc, char **argv) {
 
     return true;
 }
+/*
+ * To clarify, is that your view/opinion, or is that policy? (I don't mean that rudely, but if that _is_ policy, then I'll edit my answer to clearly state that what I said is incorrect and to listen to policy instead)
+ * */
