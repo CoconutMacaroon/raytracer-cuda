@@ -13,6 +13,10 @@ This is [my original raytracer](https://github.com/coconutmacaroon/raytracer), b
 
 I'm assuming you've cloned the repo and are in the main directory. To build it, just run `make`, and to run it, do `./bin/main`. If you have hybrid graphics, you may need to run it with `optirun ./bin/main` (`optirun` is from [Bumblebee](https://wiki.archlinux.org/title/Bumblebee)). Note that `make` will automatically build the executable optimized for your specific system - it may not run on other systems.
 
+### Sphere generation
+
+This _is_ done automatically by the `Makefile`. If you would like to re-run the sphere generation script, run `make -B spheres all` to re-generate that data re-compile the dependencies.
+
 ## TODO:
 - [x] Multiple random spheres
 - [ ] Antialiasing
