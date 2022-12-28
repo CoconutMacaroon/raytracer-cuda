@@ -698,6 +698,3 @@ bool initGL(int *argc, char **argv) {
 
     return true;
 }
-/*
- * To clarify, is that your view/opinion, or is that policy? (I don't mean that rudely, but if that _is_ policy, then I'll edit my answer to clearly state that what I said is incorrect and to listen to policy instead)
- * */
